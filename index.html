@@ -1,132 +1,1647 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html><head><base href><meta charset="UTF-8">
+<title>&#x5065;&#x5eb7;&#x5361;&#x724c;&#x6e38;&#x620f;</title>
+<style>
+  /* 保持现有样式 */
+  body {
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #1a1c2c 0%, #2a3c54 100%);
+    font-family: 'Arial', sans-serif;
+    color: #ffffff;
+    min-height: 100vh;
+  }
 
-  <!-- SEO Meta Tags -->
-  <meta name="description" content="A mobile simulator designed to demonstrate mobile interface design.">
-  <meta name="keywords" content="mobile, simulator, mobile design, mobile app">
-  <meta name="author" content="Your Name or Company">
-  <meta http-equiv="Content-Language" content="en">
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0,0,0,0.8);
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    z-index: 1000;
+  }
 
-  <!-- Canonical Link -->
-  <link rel="canonical" href="https://www.yourwebsite.com/pc-simulator" />
+  .nav-item {
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+  }
 
-  <!-- Open Graph for Social Media -->
-  <meta property="og:title" content="PC Simulator">
-  <meta property="og:description" content="A mobile simulator designed to demonstrate mobile interface design.">
-  <meta property="og:image" content="https://www.yourwebsite.com/pc-simulator-image.jpg">
-  <meta property="og:url" content="https://www.yourwebsite.com/pc-simulator">
-  <meta property="og:type" content="website">
+  .nav-item:hover, .nav-item.active {
+    background: rgba(255,255,255,0.2);
+  }
 
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="PC Simulator">
-  <meta name="twitter:description" content="A mobile simulator designed to demonstrate mobile interface design.">
-  <meta name="twitter:image" content="https://www.yourwebsite.com/pc-simulator-image.jpg">
-  <meta name="twitter:creator" content="@yourtwitterhandle">
+  .game-section {
+    display: none;
+    padding: 80px 20px 20px;
+  }
 
-  <!-- Favicon -->
-  <link rel="icon" href="https://www.yourwebsite.com/favicon.ico" type="image/x-icon">
+  .game-section.active {
+    display: block;
+  }
 
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXX-Y"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-      dataLayer.push(arguments);
-    }
-    gtag('js', new Date());
-    gtag('config', 'UA-XXXXX-Y');
-  </script>
+  .announcements {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+  }
 
-  <!-- Microsoft Clarity -->
-  <script type="text/javascript">
-    (function(c,l,a,r,i,t,y) {
-      window.clarity=window.clarity||function(){(clarity.q=clarity.q||[]).push(arguments)};
-      clarity('set', 'anonymizeIP', true);
-      i=l.createElement('script');i.async=1;i.src=r;i.type='text/javascript';
-      t=l.getElementsByTagName('script')[0];t.parentNode.insertBefore(i,t);
-    })(document,window,'script','https://www.clarity.ms/tag/XXXXXX');
-  </script>
+  .announcement-item {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
 
-  <title>PC Simulator</title>
+  .stats-panel {
+    position: fixed;
+    left: 20px;
+    top: 80px;
+    background: rgba(0,0,0,0.7);
+    padding: 15px;
+    border-radius: 10px;
+  }
 
-  <style>
-    /* Global Styles */
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-    }
+  .stat-item {
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-    .mobile-container {
-      width: 360px;
-      height: 640px;
-      border: 16px solid black;
-      border-radius: 16px;
-      background-color: #fff;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+  .stat-icon {
+    width: 20px;
+    height: 20px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+  }
 
-    .content {
-      font-size: 1.2rem;
-      color: #333;
-    }
+  .achievement-popup {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255,215,0,0.9);
+    color: #000;
+    padding: 15px;
+    border-radius: 10px;
+    transform: translateX(120%);
+    transition: transform 0.3s ease;
+  }
 
-    /* Adjustments for PC */
-    @media (min-width: 768px) {
-      .mobile-container {
-        width: 600px;
-        height: 1000px;
-      }
+  .achievement-popup.show {
+    transform: translateX(0);
+  }
 
-      .content {
-        font-size: 1.5rem;
-      }
-    }
+  .game-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 
-    @media (min-width: 1024px) {
-      .mobile-container {
-        width: 800px;
-        height: 1400px;
-      }
+  .header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
 
-      .content {
-        font-size: 1.8rem;
-      }
-    }
+  .header h1 {
+    font-size: 2.5em;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    margin-bottom: 10px;
+  }
 
-    /* Additional responsiveness for larger screens */
-    @media (min-width: 1200px) {
-      body {
-        justify-content: flex-start;
-      }
+  .card-groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
 
-      .mobile-container {
-        margin-top: 50px;
-      }
-    }
-  </style>
+  .card-group {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    width: 280px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .card-group:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+
+  .card-group h2 {
+    color: #4fc3f7;
+    margin: 0 0 15px 0;
+    text-align: center;
+  }
+
+  .card-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 300px;
+    height: 420px;
+    perspective: 1000px;
+    z-index: 1000;
+    transition: transform 0.5s ease;
+  }
+
+  .card {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.8s ease;
+  }
+
+  .card.flip {
+    transform: rotateY(180deg);
+  }
+
+  .card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .card-front {
+    background: linear-gradient(45deg, #2196f3, #00bcd4);
+    transform: rotateY(0deg);
+  }
+
+  .card-back {
+    background: linear-gradient(45deg, #ff9800, #f44336);
+    transform: rotateY(180deg);
+  }
+
+  .severity-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .severity-button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .severity-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    z-index: 999;
+  }
+
+  .card-title {
+    font-size: 1.5em;
+    color: white;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+
+  .card-description {
+    font-size: 1.1em;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .card-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    fill: white;
+    text-align: center;
+    font-size: 48px;
+  }
+
+  .pokedex {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 300px;
+    display: none;
+  }
+
+  .pokedex h3 {
+    margin-top: 0;
+    color: #2196f3;
+  }
+
+  .pokedex-list {
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .pokedex-card {
+    margin: 10px 0;
+    padding: 10px;
+    background: #f5f5f5;
+    border-radius: 5px;
+  }
+
+  .group-status {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1001;
+    display: none;
+  }
+
+  .group-status h3 {
+    margin-top: 0;
+    color: #4fc3f7;
+  }
+
+  .status-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .status-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .continue-btn {
+    background: #4caf50;
+    color: white;
+  }
+
+  .exit-btn {
+    background: #f44336;
+    color: white;
+  }
+
+  /* Add new styles */
+  .deck-list, .rankings-list, .achievements-list, .store-items, .settings-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .ranking-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+  }
+
+  .rank {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #ffd700;
+    width: 40px;
+    text-align: center;
+  }
+
+  .achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 10px;
+  }
+
+  .achievement-item.locked {
+    opacity: 0.5;
+  }
+
+  .achievement-icon {
+    font-size: 2em;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+  }
+
+  .store-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  .store-item {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .item-icon {
+    font-size: 3em;
+    margin-bottom: 10px;
+  }
+
+  .buy-button {
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+  }
+
+  .buy-button:hover {
+    background: #45a049;
+  }
+
+  .settings-group {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .setting-item {
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .setting-item label {
+    min-width: 100px;
+  }
+
+  .setting-item input[type="range"],
+  .setting-item input[type="text"],
+  .setting-item select {
+    flex: 1;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+
+  .pokedex-notification {
+    position: fixed;
+    right: -300px;
+    top: 100px;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    width: 250px;
+    animation: slideIn 0.5s forwards;
+    z-index: 1100;
+  }
+
+  .pokedex-notification .card-preview {
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .pokedex-notification .card-icon {
+    font-size: 24px;
+  }
+
+  @keyframes slideIn {
+    from { right: -300px; }
+    to { right: 20px; }
+  }
+
+  @keyframes slideOut {
+    from { right: 20px; }
+    to { right: -300px; }
+  }
+
+  .pokedex-notification.exit {
+    animation: slideOut 0.5s forwards;
+  }
+
+  .view-pokedex-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  .view-pokedex-btn:hover {
+    background: #45a049;
+  }
+
+  .deck-progress {
+    background: rgba(255,255,255,0.1);
+    height: 20px;
+    border-radius: 10px;
+    margin: 10px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    background: linear-gradient(90deg, #4CAF50, #8BC34A);
+    height: 100%;
+    transition: width 0.3s ease;
+  }
+
+  .deck-progress span {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+  }
+
+  .purchase-confirm {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.9);
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1002;
+    text-align: center;
+  }
+
+  .confirm-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .confirm-buttons button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .confirm-yes {
+    background: #4CAF50;
+    color: white;
+  }
+
+  .confirm-no {
+    background: #f44336;
+    color: white;
+  }
+
+  .deck-power {
+    background: rgba(255,215,0,0.1);
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    text-align: center;
+    color: #ffd700;
+  }
+
+  .reward-notification {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 215, 0, 0.9);
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideDown 0.5s ease-out;
+    z-index: 1200;
+  }
+
+  .reward-notification.fade-out {
+    animation: fadeOut 0.5s ease-out;
+  }
+
+  @keyframes slideDown {
+    from { transform: translate(-50%, -100%); }
+    to { transform: translate(-50%, 0); }
+  }
+
+  @keyframes fadeOut {
+    to { opacity: 0; }
+  }
+
+  .coin-stat {
+    background: rgba(255, 215, 0, 0.2);
+    padding: 5px 10px;
+    border-radius: 15px;
+    margin-top: 10px;
+  }
+
+  .card-rarity {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8em;
+    background: rgba(255,255,255,0.2);
+    color: white;
+  }
+
+  .card[data-rarity="稀有"] .card-rarity {
+    background: linear-gradient(45deg, #ffd700, #daa520);
+  }
+
+  .card[data-rarity="超稀有"] .card-rarity {
+    background: linear-gradient(45deg, #ff4081, #c51162);
+  }
+  
+  .card-image {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+
+  .pokedex-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+  }
+
+  .pokedex-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .pokedex-card .card-icon {
+    font-size: 2em;
+    margin: 10px 0;
+  }
+
+  /* Add new styles */
+  .pokedex-group {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .pokedex-group h4 {
+    color: #4fc3f7;
+    margin: 0 0 15px 0;
+  }
+
+  .pokedex-card {
+    background: rgba(255,255,255,0.05);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .pokedex-card .card-image {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+  }
+
+  .pokedex-card .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .pokedex-card .card-info {
+    flex: 1;
+  }
+
+  .pokedex-card .card-rarity {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8em;
+    background: rgba(255,215,0,0.2);
+    margin: 5px 0;
+  }
+
+  .pokedex-card .card-score,
+  .pokedex-card .card-severity {
+    margin: 5px 0;
+    font-size: 0.9em;
+  }
+
+  .reevaluate-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+
+  .reevaluate-btn:hover {
+    background: #45a049;
+  }
+
+  .deck-group {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+
+  .deck-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+  }
+
+  .deck-card {
+    background: rgba(255,255,255,0.05);
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .deck-card .card-icon {
+    font-size: 2em;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+  }
+
+  .deck-card .card-info {
+    flex: 1;
+  }
+
+  .deck-card .card-info h4 {
+    margin: 0 0 5px 0;
+  }
+
+  .deck-card .card-info p {
+    margin: 0;
+    font-size: 0.9em;
+    opacity: 0.8;
+  }
+
+  .deck-card .card-rarity {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8em;
+    background: rgba(255,215,0,0.2);
+    margin-top: 5px;
+  }
+
+  .card-preview .card-image {
+    width: 60px;
+    height: 60px;
+  }
+</style>
 </head>
-
 <body>
-  <div class="mobile-container">
-    <div class="content">
-      <p>Mobile Simulator Screen</p>
-      <p>PC Version: Adjusted for larger screens.</p>
+  <div class="nav-menu">
+    <a href="#home" class="nav-item active">&#x9996;&#x9875;</a>
+    <a href="#decks" class="nav-item">&#x5361;&#x7ec4;</a>
+    <a href="#pokedex" class="nav-item">&#x56fe;&#x9274;</a>
+    <a href="#rankings" class="nav-item">&#x6392;&#x884c;</a>
+    <a href="#achievements" class="nav-item">&#x6210;&#x5c31;</a>
+    <a href="#store" class="nav-item">&#x5546;&#x5e97;</a>
+    <a href="#settings" class="nav-item">&#x8bbe;&#x7f6e;</a>
+  </div>
+
+  <div id="home" class="game-section active">
+    <div class="announcements">
+      <h3>&#x516c;&#x544a;</h3>
+      <div class="announcement-item">
+        &#x6b22;&#x8fce;&#x6765;&#x5230;&#x5065;&#x5eb7;&#x5361;&#x724c;&#x6e38;&#x620f;&#xff01;&#x63a2;&#x7d22;&#x4f60;&#x7684;&#x5065;&#x5eb7;&#x72b6;&#x6001;&#xff0c;&#x6536;&#x96c4;&#x72ec;&#x7279;&#x5361;&#x7247;&#x3002;
+      </div>
+    </div>
+    
+    <div class="game-container">
+      <div class="header">
+        <h1>&#x5065;&#x5eb7;&#x5361;&#x724c;&#x8bc4;&#x4f30;</h1>
+        <p>&#x9009;&#x62e9;&#x4e00;&#x4e2a;&#x5361;&#x7ec4;&#x5f00;&#x59cb;&#x8bc4;&#x4f30;&#x60a8;&#x7684;&#x5065;&#x5eb7;&#x72b6;&#x51b5;</p>
+      </div>
+      
+      <div class="card-groups">
+        <div class="card-group" data-group="&#x6c14;&#x865a;">
+          <h2>&#x6c14;&#x865a;</h2>
+          <p>&#x8bc4;&#x4f30;&#x6c14;&#x865a;&#x76f8;&#x5173;&#x75c7;&#x72b6;</p>
+        </div>
+        <div class="card-group" data-group="&#x9633;&#x865a;">
+          <h2>&#x9633;&#x865a;</h2>
+          <p>&#x8bc4;&#x4f30;&#x9633;&#x865a;&#x76f8;&#x5173;&#x75c7;&#x72b6;</p>
+        </div>
+        <div class="card-group" data-group="&#x809d;&#x810f;&#x5065;&#x5eb7;">
+          <h2>&#x809d;&#x810f;&#x5065;&#x5eb7;</h2>
+          <p>&#x8bc4;&#x4f30;&#x809d;&#x810f;&#x76f8;&#x5173;&#x75c7;&#x72b6;</p>
+        </div>
+        <div class="card-group" data-group="&#x80be;&#x810f;&#x5065;&#x5eb7;">
+          <h2>&#x80be;&#x810f;&#x5065;&#x5eb7;</h2>
+          <p>&#x8bc4;&#x4f30;&#x80be;&#x810f;&#x76f8;&#x5173;&#x75c7;&#x72b6;</p>
+        </div>
+        <div class="card-group" data-group="&#x80c3;&#x810f;&#x5065;&#x5eb7;">
+          <h2>&#x80c3;&#x810f;&#x5065;&#x5eb7;</h2>
+          <p>&#x8bc4;&#x4f30;&#x80c3;&#x90e8;&#x76f8;&#x5173;&#x75c7;&#x72b6;</p>
+        </div>
+        <div class="card-group" data-group="&#x5fc3;&#x810f;&#x5065;&#x5eb7;">
+          <h2>&#x5fc3;&#x810f;&#x5065;&#x5eb7;</h2>
+          <p>&#x8bc4;&#x4f30;&#x5fc3;&#x810f;&#x76f8;&#x5173;&#x75c7;&#x72b6;</p>
+        </div>
+        <div class="card-group" data-group="&#x7ecf;&#x7edc;&#x5065;&#x5eb7;">
+          <h2>&#x7ecf;&#x7edc;&#x5065;&#x5eb7;</h2>
+          <p>&#x8bc4;&#x4f30;&#x7ecf;&#x7edc;&#x76f8;&#x5173;&#x75c7;&#x72b6;</p>
+        </div>
+      </div>
     </div>
   </div>
-</body>
 
-</html>
+  <div id="decks" class="game-section">
+    <div class="header">
+      <h1>&#x6211;&#x7684;&#x5361;&#x7ec4;</h1>
+      <p>&#x67e5;&#x770b;&#x548c;&#x7ba1;&#x7406;&#x4f60;&#x7684;&#x5361;&#x7ec4;</p>
+    </div>
+    <div class="deck-list"></div>
+  </div>
+
+  <div id="rankings" class="game-section">
+    <div class="header">
+      <h1>&#x6392;&#x884c;&#x699c;</h1>
+      <p>&#x67e5;&#x770b;&#x73a9;&#x5bb6;&#x6218;&#x6597;&#x529b;&#x6392;&#x540d;</p>
+    </div>
+    <div class="rankings-list">
+      <div class="ranking-item">
+        <span class="rank">1</span>
+        <span class="player-name">&#x73a9;&#x5bb6;001</span>
+        <span class="power">1200</span>
+      </div>
+      <div class="ranking-item">
+        <span class="rank">2</span>
+        <span class="player-name">&#x73a9;&#x5bb6;002</span>
+        <span class="power">1100</span>
+      </div>
+      <div class="ranking-item">
+        <span class="rank">3</span>
+        <span class="player-name">&#x73a9;&#x5bb6;003</span>
+        <span class="power">1000</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="achievements" class="game-section">
+    <div class="header">
+      <h1>&#x6210;&#x5c31;</h1>
+      <p>&#x89e3;&#x9501;&#x7684;&#x6210;&#x5c31;&#x548c;&#x6311;&#x6218;</p>
+    </div>
+    <div class="achievements-list">
+      <div class="achievement-item locked">
+        <div class="achievement-icon">&#x1f3af;</div>
+        <div class="achievement-info">
+          <h3>&#x521d;&#x7ea7;&#x6536;&#x85cf;&#x5bb5;</h3>
+          <p>&#x6536;&#x96c4;5&#x5f20;&#x5361;&#x7247;</p>
+        </div>
+      </div>
+      <div class="achievement-item locked">
+        <div class="achievement-icon">&#x1f3c6;</div>
+        <div class="achievement-info">
+          <h3>&#x5b8c;&#x7f8e;&#x5361;&#x7ec4;</h3>
+          <p>&#x5b8c;&#x6210;&#x4e00;&#x4e2a;&#x5361;&#x7ec4;&#x7684;&#x6240;&#x6709;&#x8bc4;&#x4f30;</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="store" class="game-section">
+    <div class="header">
+      <h1>&#x5546;&#x5e97;</h1>
+      <p>&#x8d2d;&#x4e70;&#x7279;&#x6b8a;&#x5361;&#x5305;&#x548c;&#x9053;&#x5177;</p>
+    </div>
+    <div class="store-items">
+      <div class="store-item">
+        <div class="item-icon">&#x1f4e6;</div>
+        <h3>&#x7a00;&#x6709;&#x5361;&#x5305;</h3>
+        <p>&#x5305;&#x542b;3&#x5f20;&#x968f;&#x673a;&#x7a00;&#x6709;&#x5361;&#x7247;</p>
+        <button class="buy-button">&#x8d2d;&#x4e70; (100&#x91d1;&#x5e01;)</button>
+      </div>
+      <div class="store-item">
+        <div class="item-icon">&#x1f3a8;</div>
+        <h3>&#x5361;&#x7247;&#x88c5;&#x9970;&#x5305;</h3>
+        <p>&#x81ea;&#x5b9a;&#x4e49;&#x5361;&#x7247;&#x5916;&#x89c2;</p>
+        <button class="buy-button">&#x8d2d;&#x4e70; (50&#x91d1;&#x5e01;)</button>
+      </div>
+      <div class="store-item">
+        <div class="item-icon">&#x1f52e;</div>
+        <h3>&#x9884;&#x6d4b;&#x5361;&#x5305;</h3>
+        <p>&#x9884;&#x6d4b;&#x4e0b;&#x4e00;&#x5f20;&#x5361;&#x7247;</p>
+        <button class="buy-button">&#x8d2d;&#x4e70; (75&#x91d1;&#x5e01;)</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="settings" class="game-section">
+    <div class="header">
+      <h1>&#x8bbe;&#x7f6e;</h1>
+      <p>&#x6e38;&#x620f;&#x8bbe;&#x7f6e;&#x548c;&#x8d26;&#x53f7;&#x7ba1;&#x7406;</p>
+    </div>
+    <div class="settings-container">
+      <div class="settings-group">
+        <h3>&#x58f0;&#x97f3;&#x8bbe;&#x7f6e;</h3>
+        <div class="setting-item">
+          <label>&#x97f3;&#x4e50;&#x97f3;&#x91cf;</label>
+          <input type="range" min="0" max="100" value="50">
+        </div>
+        <div class="setting-item">
+          <label>&#x97f3;&#x6548;&#x97f3;&#x91cf;</label>
+          <input type="range" min="0" max="100" value="50">
+        </div>
+      </div>
+      <div class="settings-group">
+        <h3>&#x8d26;&#x53f7;&#x8bbe;&#x7f6e;</h3>
+        <div class="setting-item">
+          <label>&#x7528;&#x6237;&#x540d;</label>
+          <input type="text" value="&#x73a9;&#x5bb6;001">
+        </div>
+        <div class="setting-item">
+          <label>&#x8bed;&#x8a00;</label>
+          <select>
+            <option>&#x7b80;&#x4f53;&#x4e2d;&#x6587;</option>
+            <option>English</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-panel">
+    <div class="stat-item">
+      <div class="stat-icon">&#x1f4ab;</div>
+      <span>&#x5df2;&#x6536;&#x96c4;: <span id="collected-cards">0</span></span>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon">&#x26a1;</div>
+      <span>&#x603b;&#x6218;&#x6597;&#x529b;: <span id="total-power">0</span></span>
+    </div>
+    <div class="stat-item coin-stat">
+      <div class="stat-icon">&#x1f4b0;</div>
+      <span>&#x91d1;&#x5e01;: <span id="player-coins">1000</span></span>
+    </div>
+  </div>
+
+  <div class="overlay"></div>
+  <div class="card-container">
+    <div class="card">
+      <div class="card-face card-front">
+        <div class="card-title"></div>
+        <div class="card-icon"></div>
+        <div class="card-description"></div>
+        <div class="card-rarity"></div>
+        <div class="severity-options">
+          <button class="severity-button" data-severity="none">&#x65e0;&#x75c7;&#x72b6;</button>
+          <button class="severity-button" data-severity="mild">&#x8f7b;&#x5ea6;</button>
+          <button class="severity-button" data-severity="moderate">&#x4e2d;&#x5ea6;</button>
+          <button class="severity-button" data-severity="severe">&#x91cd;&#x5ea6;</button>
+        </div>
+      </div>
+      <div class="card-face card-back">
+      </div>
+    </div>
+  </div>
+
+  <div class="group-status">
+    <h3>&#x5361;&#x7ec4;&#x72b6;&#x6001;</h3>
+    <div class="unlocked-cards"></div>
+    <div class="locked-cards"></div>
+    <div class="status-buttons">
+      <button class="status-button continue-btn">&#x7ee7;&#x7eed;&#x89e3;&#x9501;</button>
+      <button class="status-button exit-btn">&#x9000;&#x51fa;</button>
+    </div>
+  </div>
+
+  <div class="pokedex">
+    <h3>&#x56fe;&#x9274;</h3>
+    <div class="pokedex-list"></div>
+    <button class="close-pokedex">&#x5173;&#x95ed;</button>
+  </div>
+
+  <script>let unlockedCards = {
+  "气虚": [],
+  "阳虚": [],
+  "肝脏健康": [],
+  "肾脏健康": [],
+  "胃脏健康": [],
+  "心脏健康": [],
+  "经络健康": []
+};
+const cardData = {
+  "气虚": [{
+    title: "疲劳乏力",
+    description: "容易疲劳,精神不振",
+    icon: "😫",
+    rarity: "普通",
+    image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23FFD700'/><path d='M30 65 Q50 35 70 65' stroke='black' fill='none'/></svg>"
+  }, {
+    title: "气短懒言",
+    description: "呼吸短促,不愿说话",
+    icon: "😮‍💨",
+    rarity: "普通",
+    image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%234FC3F7'/><path d='M35 50 H65' stroke='black'/></svg>"
+  }, {
+    title: "自汗",
+    description: "容易出汗,活动后更明显",
+    icon: "💦",
+    rarity: "稀有",
+    image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2381C784'/><path d='M40 40 L50 60 L60 40' fill='%23E3F2FD'/></svg>"
+  }],
+  "阳虚": [{
+    title: "畏寒肢冷",
+    description: "怕冷,手脚发凉",
+    icon: "🥶",
+    rarity: "普通",
+    image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2342A5F5'/><path d='M35 50 L65 50 M50 35 L50 65' stroke='white'/></svg>"
+  }, {
+    title: "面色苍白",
+    description: "面色淡白无华",
+    icon: "😶",
+    rarity: "普通",
+    image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23BDBDBD'/><circle cx='50' cy='50' r='25' fill='%23F5F5F5'/></svg>"
+  }, {
+    title: "下肢浮肿",
+    description: "腿脚浮肿",
+    icon: "🦶",
+    rarity: "稀有",
+    image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23FF7043'/><path d='M30 40 Q50 70 70 40' fill='%23FFE0B2'/></svg>"
+  }],
+  "肝脏健康": [{
+    title: "眼睛干涩",
+    description: "眼睛疲劳,干涩不适",
+    icon: "👁️",
+    rarity: "普通",
+    image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%23FFD700'/><path d='M30 65 Q50 35 70 65' stroke='black' fill='none'/></svg>"
+  }, {
+    title: "烦躁易怒",
+    description: "容易发脾气,情绪不稳",
+    icon: "😠",
+    rarity: "普通",
+    image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%234FC3F7'/><path d='M35 50 H65' stroke='black'/></svg>"
+  }, {
+    title: "胁肋疼痛",
+    description: "肋骨下方隐隐作痛",
+    icon: "🤕",
+    rarity: "稀有",
+    image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%2381C784'/><path d='M40 40 L50 60 L60 40' fill='%23E3F2FD'/></svg>"
+  }]
+};
+let playerCoins = 1000;
+function initializePokedex() {
+  const pokedex = document.querySelector('.pokedex');
+  if (!pokedex) return;
+  pokedex.innerHTML = `
+        <h3>图鉴</h3>
+        <div class="pokedex-list"></div>
+        <button class="close-pokedex">关闭</button>
+      `;
+  document.querySelector('.close-pokedex').onclick = () => {
+    pokedex.style.display = 'none';
+  };
+  updatePokedex();
+}
+function calculateCardScore(card, severity) {
+  let baseScore = 0;
+  switch (card.rarity) {
+    case "超稀有":
+      baseScore = 100;
+      break;
+    case "稀有":
+      baseScore = 50;
+      break;
+    case "普通":
+      baseScore = 25;
+      break;
+    default:
+      baseScore = 10;
+  }
+  let severityMultiplier = 1;
+  switch (severity) {
+    case "severe":
+      severityMultiplier = 2;
+      break;
+    case "moderate":
+      severityMultiplier = 1.5;
+      break;
+    case "mild":
+      severityMultiplier = 1.2;
+      break;
+    case "none":
+      severityMultiplier = 1;
+      break;
+  }
+  return Math.floor(baseScore * severityMultiplier);
+}
+function updateCoinsDisplay() {
+  const statsPanel = document.querySelector('.stats-panel');
+  if (!document.querySelector('.coin-stat')) {
+    const coinStat = document.createElement('div');
+    coinStat.className = 'stat-item coin-stat';
+    coinStat.innerHTML = `
+          <div class="stat-icon">💰</div>
+          <span>金币: <span id="player-coins">${playerCoins}</span></span>
+        `;
+    statsPanel.appendChild(coinStat);
+  } else {
+    document.getElementById('player-coins').textContent = playerCoins;
+  }
+}
+function rewardCardCollection(severity) {
+  let reward = 0;
+  switch (severity) {
+    case 'none':
+      reward = 10;
+      break;
+    case 'mild':
+      reward = 20;
+      break;
+    case 'moderate':
+      reward = 30;
+      break;
+    case 'severe':
+      reward = 40;
+      break;
+  }
+  playerCoins += reward;
+  updateCoinsDisplay();
+  showRewardNotification(reward);
+}
+function showRewardNotification(amount) {
+  const notification = document.createElement('div');
+  notification.className = 'reward-notification';
+  notification.innerHTML = `
+        <div class="reward-icon">💰</div>
+        <div class="reward-text">获得 ${amount} 金币!</div>
+      `;
+  document.body.appendChild(notification);
+  setTimeout(() => {
+    notification.classList.add('fade-out');
+    setTimeout(() => notification.remove(), 500);
+  }, 2000);
+}
+function calculateTotalPower() {
+  return Object.values(unlockedCards).reduce((totalSum, cards) => {
+    return totalSum + cards.reduce((sum, card) => sum + card.score, 0);
+  }, 0);
+}
+let achievements = {
+  collector: {
+    id: 'collector',
+    title: '初级收藏家',
+    description: '收集5张卡片',
+    isUnlocked: false,
+    check: () => Object.values(unlockedCards).reduce((acc, curr) => acc + curr.length, 0) >= 5
+  },
+  perfectDeck: {
+    id: 'perfectDeck',
+    title: '完美卡组',
+    description: '完成一个卡组的所有评估',
+    isUnlocked: false,
+    check: () => Object.values(unlockedCards).some(cards => cards.length === cardData[Object.keys(cardData)[0]].length)
+  }
+};
+function checkAchievements() {
+  Object.values(achievements).forEach(achievement => {
+    if (!achievement.isUnlocked && achievement.check()) {
+      achievement.isUnlocked = true;
+      showAchievement(`解锁成就：${achievement.title}！`);
+      updateAchievementsDisplay();
+    }
+  });
+}
+function updateAchievementsDisplay() {
+  const achievementsContainer = document.querySelector('.achievements-list');
+  achievementsContainer.innerHTML = '';
+  Object.values(achievements).forEach(achievement => {
+    const achievementElement = document.createElement('div');
+    achievementElement.className = `achievement-item ${achievement.isUnlocked ? '' : 'locked'}`;
+    achievementElement.innerHTML = `
+          <div class="achievement-icon">${achievement.isUnlocked ? '🏆' : '🔒'}</div>
+          <div class="achievement-info">
+            <h3>${achievement.title}</h3>
+            <p>${achievement.description}</p>
+          </div>
+        `;
+    achievementsContainer.appendChild(achievementElement);
+  });
+}
+function updatePokedex() {
+  const pokedexList = document.querySelector('.pokedex-list');
+  if (!pokedexList) {
+    console.error('Pokedex list element not found');
+    return;
+  }
+  pokedexList.innerHTML = '';
+  Object.entries(unlockedCards).forEach(([groupName, cards]) => {
+    if (cards.length === 0) return;
+    const groupSection = document.createElement('div');
+    groupSection.className = 'pokedex-group';
+    const groupHeader = document.createElement('h4');
+    groupHeader.textContent = groupName;
+    groupSection.appendChild(groupHeader);
+    const groupPower = cards.reduce((sum, card) => sum + (card.score || 0), 0);
+    const powerDisplay = document.createElement('div');
+    powerDisplay.className = 'deck-power';
+    powerDisplay.innerHTML = `<span>🔥 战斗力: ${groupPower}</span>`;
+    groupSection.appendChild(powerDisplay);
+    cards.forEach(card => {
+      const cardElement = document.createElement('div');
+      cardElement.className = 'pokedex-card';
+      cardElement.innerHTML = `
+        ${card.image ? `
+          <div class="card-image">
+            <img src="${card.image}" alt="${card.title}">
+          </div>
+        ` : ''}
+        <div class="card-icon">${card.icon}</div>
+        <div class="card-info">
+          <h5>${card.title}</h5>
+          <p>${card.description}</p>
+          <p class="card-rarity">${card.rarity || '普通'}</p>
+          <p class="card-score">战斗力: ${card.score}</p>
+          <p class="card-severity">严重程度: ${card.severity}</p>
+          <button class="reevaluate-btn">重新评估</button>
+        </div>
+      `;
+      const reevaluateBtn = cardElement.querySelector('.reevaluate-btn');
+      reevaluateBtn.onclick = () => {
+        showCardForEvaluation(card, groupName);
+        document.querySelector('.pokedex').style.display = 'none';
+      };
+      groupSection.appendChild(cardElement);
+    });
+    pokedexList.appendChild(groupSection);
+  });
+  updateStats();
+  checkAchievements();
+}
+function updateStats() {
+  const totalCards = Object.values(unlockedCards).reduce((acc, curr) => acc + curr.length, 0);
+  document.getElementById('collected-cards').textContent = totalCards;
+  const totalPower = Object.values(unlockedCards).reduce((acc, cards) => {
+    return acc + cards.reduce((sum, card) => sum + card.score, 0);
+  }, 0);
+  document.getElementById('total-power').textContent = totalPower;
+}
+function showAchievement(message) {
+  const popup = document.createElement('div');
+  popup.className = 'achievement-popup';
+  popup.textContent = `🏆 ${message}`;
+  document.body.appendChild(popup);
+  setTimeout(() => popup.classList.add('show'), 100);
+  setTimeout(() => {
+    popup.classList.remove('show');
+    setTimeout(() => popup.remove(), 300);
+  }, 3000);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  initializePokedex();
+  function initializeDeckManagement() {
+    const deckList = document.querySelector('.deck-list');
+    deckList.innerHTML = '';
+    Object.entries(unlockedCards).forEach(([groupName, cards]) => {
+      const deckElement = document.createElement('div');
+      deckElement.className = 'deck-group';
+      const totalCardsInGroup = cardData[groupName]?.length || 0;
+      const unlockedCount = cards.length;
+      const completionPercentage = totalCardsInGroup ? (unlockedCount / totalCardsInGroup * 100).toFixed(1) : 0;
+      const deckPower = cards.reduce((sum, card) => sum + (card.score || 0), 0);
+      deckElement.innerHTML = `
+            <h3>${groupName}</h3>
+            <div class="deck-progress">
+              <div class="progress-bar" style="width: ${completionPercentage}%"></div>
+              <span>${unlockedCount} / ${totalCardsInGroup} (${completionPercentage}%)</span>
+            </div>
+            <div class="deck-power">
+              <span> 战斗力: ${deckPower}</span>
+            </div>
+            <div class="deck-cards">
+              ${cards.map(card => `
+                <div class="deck-card">
+                  <div class="card-icon">${card.icon || ''}</div>
+                  <div class="card-info">
+                    <h4>${card.title}</h4>
+                    <p>${card.description}</p>
+                    ${card.rarity ? `<span class="card-rarity">${card.rarity}</span>` : ''}
+                    ${card.image ? `<img src="${card.image}" alt="${card.title}" style="width:60px;height:60px;">` : ''}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          `;
+      deckList.appendChild(deckElement);
+    });
+    const style = document.createElement('style');
+    style.textContent = `
+          .deck-group {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+          }
+
+          .deck-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+          }
+
+          .deck-card {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+          }
+
+          .deck-card .card-icon {
+            font-size: 2em;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+          }
+
+          .deck-card .card-info {
+            flex: 1;
+          }
+
+          .deck-card .card-info h4 {
+            margin: 0 0 5px 0;
+          }
+
+          .deck-card .card-info p {
+            margin: 0;
+            font-size: 0.9em;
+            opacity: 0.8;
+          }
+
+          .deck-card .card-rarity {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8em;
+            background: rgba(255,215,0,0.2);
+            margin-top: 5px;
+          }
+        `;
+    document.head.appendChild(style);
+  }
+  function updateRankings() {
+    const rankingsList = document.querySelector('.rankings-list');
+    if (!rankingsList) return;
+    const playerPower = calculateTotalPower();
+    const rankings = [{
+      name: '玩家001',
+      power: playerPower
+    }, {
+      name: '玩家002',
+      power: Math.floor(Math.random() * 500 + 800)
+    }, {
+      name: '玩家003',
+      power: Math.floor(Math.random() * 500 + 700)
+    }, {
+      name: '玩家004',
+      power: Math.floor(Math.random() * 500 + 600)
+    }, {
+      name: '玩家005',
+      power: Math.floor(Math.random() * 500 + 500)
+    }].sort((a, b) => b.power - a.power);
+    rankingsList.innerHTML = rankings.map((player, index) => `
+          <div class="ranking-item">
+            <span class="rank">${index + 1}</span>
+            <span class="player-name">${player.name}</span>
+            <span class="power"> 战斗力: ${player.power}</span>
+          </div>
+        `).join('');
+  }
+  function initializeStore() {
+    const storeItems = [{
+      name: '稀有卡包',
+      description: '包含3张随机稀有卡片',
+      price: 100,
+      icon: ''
+    }, {
+      name: '卡片装饰包',
+      description: '自定义卡片外观',
+      price: 50,
+      icon: ''
+    }, {
+      name: '预测卡包',
+      description: '预测下一张卡片',
+      price: 75,
+      icon: ''
+    }];
+    const storeContainer = document.querySelector('.store-items');
+    if (!storeContainer) return;
+    storeContainer.innerHTML = storeItems.map(item => `
+          <div class="store-item">
+            <div class="item-icon">${item.icon}</div>
+            <h3>${item.name}</h3>
+            <p>${item.description}</p>
+            <button class="buy-button" data-price="${item.price}">购买 (${item.price}金币)</button>
+          </div>
+        `).join('');
+    document.querySelectorAll('.buy-button').forEach(button => {
+      button.addEventListener('click', e => {
+        const price = parseInt(e.target.dataset.price);
+        if (playerCoins >= price) {
+          playerCoins -= price;
+          updateCoinsDisplay();
+          alert('购买成功！');
+        } else {
+          alert('金币不足！');
+        }
+      });
+    });
+  }
+  function initializePokedex() {}
+  initializeDeckManagement();
+  updateRankings();
+  initializeStore();
+  updateCoinsDisplay();
+  document.querySelectorAll('.card-group').forEach(group => {
+    group.addEventListener('click', e => {
+      const groupName = e.currentTarget.dataset.group;
+      if (!unlockedCards[groupName] || unlockedCards[groupName].length === 0) {
+        startGroupEvaluation(groupName);
+      } else {
+        showPokedexForGroup(groupName);
+      }
+    });
+  });
+  function startGroupEvaluation(groupName) {
+    if (!groupName || !cardData[groupName]) {
+      console.error('Invalid group name or no card data available');
+      return;
+    }
+    const availableCards = cardData[groupName];
+    if (!availableCards || availableCards.length === 0) {
+      console.error('No cards available for evaluation');
+      return;
+    }
+    showNextCard(groupName);
+  }
+  function showNextCard(groupName) {
+    if (!groupName || !cardData[groupName]) {
+      console.error('Invalid group name or no card data available');
+      return;
+    }
+    const availableCards = cardData[groupName];
+    const unlockedGroupCards = unlockedCards[groupName] || [];
+    const remainingCards = availableCards.filter(card => !unlockedGroupCards.some(unlocked => unlocked.title === card.title));
+    if (remainingCards.length === 0) {
+      document.querySelectorAll('.game-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      const pokedexSection = document.getElementById('pokedex');
+      if (pokedexSection) {
+        pokedexSection.classList.add('active');
+      }
+      document.querySelectorAll('.nav-item').forEach(navItem => {
+        navItem.classList.remove('active');
+        if (navItem.getAttribute('href') === '#pokedex') {
+          navItem.classList.add('active');
+        }
+      });
+      updatePokedex();
+      return;
+    }
+    const randomIndex = Math.floor(Math.random() * remainingCards.length);
+    const selectedCard = remainingCards[randomIndex];
+    if (selectedCard) {
+      showCardForEvaluation(selectedCard, groupName);
+    } else {
+      console.error('No card selected for evaluation');
+    }
+  }
+  function showCardForEvaluation(cardData, groupName) {
+    const cardContainer = document.querySelector('.card-container');
+    const overlay = document.querySelector('.overlay');
+    const card = cardContainer.querySelector('.card');
+    const cardFront = card.querySelector('.card-front');
+    cardFront.innerHTML = `
+      ${cardData.image ? `
+        <div class="card-image">
+          <img src="${cardData.image}" alt="${cardData.title}">
+        </div>
+      ` : ''}
+      <div class="card-title">${cardData.title}</div>
+      <div class="card-icon">${cardData.icon}</div>
+      <div class="card-description">${cardData.description}</div>
+      <div class="card-rarity">${cardData.rarity}</div>
+      <div class="severity-options">
+        <button class="severity-button" data-severity="none">无症状</button>
+        <button class="severity-button" data-severity="mild">轻度</button>
+        <button class="severity-button" data-severity="moderate">中度</button>
+        <button class="severity-button" data-severity="severe">重度</button>
+      </div>
+    `;
+    if (!card.querySelector('.exit-evaluation')) {
+      const exitBtn = document.createElement('button');
+      exitBtn.className = 'exit-evaluation';
+      exitBtn.textContent = '退出评估';
+      exitBtn.style.cssText = `
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+          `;
+      exitBtn.onclick = e => {
+        e.stopPropagation();
+        cardContainer.style.transform = 'translate(-50%, -50%) scale(0)';
+        overlay.style.display = 'none';
+        document.querySelectorAll('.game-section').forEach(section => {
+          section.classList.remove('active');
+        });
+        document.getElementById('pokedex').classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(item => {
+          item.classList.remove('active');
+          if (item.getAttribute('href') === '#pokedex') {
+            item.classList.add('active');
+          }
+        });
+        updatePokedex();
+      };
+      card.querySelector('.card-front').appendChild(exitBtn);
+    }
+    cardContainer.style.transform = 'translate(-50%, -50%) scale(1)';
+    overlay.style.display = 'block';
+    cardContainer.querySelectorAll('.severity-button').forEach(button => {
+      button.onclick = e => handleSeveritySelection(e, cardData, groupName);
+    });
+  }
+  function handleSeveritySelection(event, cardData, groupName) {
+    const severity = event.target.dataset.severity;
+    const score = calculateCardScore(cardData, severity);
+    if (!unlockedCards[groupName]) {
+      unlockedCards[groupName] = [];
+    }
+    const cardWithScore = {
+      ...cardData,
+      score,
+      severity,
+      image: cardData.image
+    };
+    const existingCardIndex = unlockedCards[groupName].findIndex(c => c.title === cardData.title);
+    if (existingCardIndex >= 0) {
+      unlockedCards[groupName][existingCardIndex] = cardWithScore;
+    } else {
+      unlockedCards[groupName].push(cardWithScore);
+    }
+    const cardContainer = document.querySelector('.card-container');
+    const overlay = document.querySelector('.overlay');
+    cardContainer.style.transform = 'translate(-50%, -50%) scale(0)';
+    overlay.style.display = 'none';
+    const notification = document.createElement('div');
+    notification.className = 'pokedex-notification';
+    notification.innerHTML = `
+      <h4>获得新卡片!</h4>
+      <div class="card-preview">
+        ${cardData.image ? `<img src="${cardData.image}" alt="${cardData.title}" style="width:60px;height:60px;">` : ''}
+        <div class="card-icon">${cardData.icon}</div>
+        <div>
+          <strong>${cardData.title}</strong>
+          <p>${cardData.description}</p>
+        </div>
+      </div>
+      <button class="view-pokedex-btn">查看图鉴</button>
+    `;
+    document.body.appendChild(notification);
+    notification.querySelector('.view-pokedex-btn').onclick = () => {
+      notification.remove();
+      document.querySelectorAll('.game-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      document.getElementById('pokedex').classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === '#pokedex') {
+          item.classList.add('active');
+        }
+      });
+      updatePokedex();
+    };
+    setTimeout(() => {
+      notification.classList.add('exit');
+      setTimeout(() => notification.remove(), 500);
+    }, 5000);
+    updatePokedex();
+    rewardCardCollection(severity);
+    setTimeout(() => showNextCard(groupName), 1000);
+  }
+  document.querySelector('.overlay').addEventListener('click', () => {
+    const cardContainer = document.querySelector('.card-container');
+    cardContainer.style.transform = 'translate(-50%, -50%) scale(0)';
+    document.querySelector('.overlay').style.display = 'none';
+  });
+  function calculateCardScore(cardData, severity) {}
+  function updateCoinsDisplay() {}
+  function updatePokedex() {}
+  function showPokedexForGroup(groupName) {}
+  function rewardCardCollection(severity) {}
+});
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', e => {
+    e.preventDefault();
+    const target = e.target.getAttribute('href').substring(1);
+    document.querySelectorAll('.game-section').forEach(section => {
+      section.classList.remove('active');
+    });
+    document.getElementById(target)?.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(navItem => {
+      navItem.classList.remove('active');
+    });
+    e.target.classList.add('active');
+  });
+});</script>
+</body></html>
